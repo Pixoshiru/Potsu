@@ -2,6 +2,11 @@
 // Chaque onde est un paquet d'ondes circulaire qui s'étend, s'atténue et s'additionne aux autres.
 // On calcule une hauteur, on en déduit une normale, et on éclaire cette normale : c'est ce qui donne
 // l'aspect « liquide » (reflets sur les pentes) plutôt que de simples cercles dessinés.
+//
+// Deux styles :
+// - Liquide : reflets colorés sur fond sombre.
+// - 1-bit : encre noire sur papier blanc, pixels agrandis et tramage ordonné (Bayer 4x4),
+//   à la manière des premiers Macintosh.
 Shader "Potsu/Ripple"
 {
     Properties
@@ -16,6 +21,12 @@ Shader "Potsu/Ripple"
         _BaseColor ("Couleur de fond", Color) = (0, 0, 0, 1)
         _LightColor ("Couleur des reflets", Color) = (0.75, 0.85, 1, 1)
         _LightDir ("Direction de la lumière", Vector) = (-0.5, 0.7, 0.6, 0)
+
+        [Toggle] _OneBit ("Style 1-bit", Float) = 1
+        _PixelSize ("Taille d'un pixel 1-bit (pixels écran)", Float) = 4
+        _InkColor ("Encre (1-bit)", Color) = (0, 0, 0, 1)
+        _PaperColor ("Papier (1-bit)", Color) = (1, 1, 1, 1)
+        _ShadowInk ("Encre dans les creux (1-bit)", Range(0, 1)) = 0.6
     }
 
     SubShader
@@ -43,6 +54,19 @@ Shader "Potsu/Ripple"
 
             float _Speed, _Wavelength, _PacketWidth, _Damping, _Lifetime, _Slope, _Intensity;
             float4 _BaseColor, _LightColor, _LightDir;
+
+            float _OneBit, _PixelSize, _ShadowInk;
+            float4 _InkColor, _PaperColor;
+            float4 _Resolution; // xy : taille de l'écran en pixels
+
+            // Seuils de la matrice de Bayer 4x4, dans [0, 1).
+            static const float Bayer4[16] =
+            {
+                 0.0 / 16.0,  8.0 / 16.0,  2.0 / 16.0, 10.0 / 16.0,
+                12.0 / 16.0,  4.0 / 16.0, 14.0 / 16.0,  6.0 / 16.0,
+                 3.0 / 16.0, 11.0 / 16.0,  1.0 / 16.0,  9.0 / 16.0,
+                15.0 / 16.0,  7.0 / 16.0, 13.0 / 16.0,  5.0 / 16.0
+            };
 
             struct appdata
             {
@@ -87,7 +111,20 @@ Shader "Potsu/Ripple"
 
             float4 frag (v2f i) : SV_Target
             {
-                float2 p = (i.uv - 0.5) * float2(_Aspect, 1.0);
+                float2 uv = i.uv;
+                float2 cell = 0;
+                bool oneBit = _OneBit > 0.5;
+
+                if (oneBit)
+                {
+                    // Pixels agrandis : on échantillonne au centre de chaque « gros pixel ».
+                    float size = max(1.0, _PixelSize);
+                    float2 res = max(_Resolution.xy, 1.0);
+                    cell = floor(uv * res / size);
+                    uv = (cell + 0.5) * size / res;
+                }
+
+                float2 p = (uv - 0.5) * float2(_Aspect, 1.0);
 
                 const float e = 0.0015;
                 float h = Height(p);
@@ -96,9 +133,20 @@ Shader "Potsu/Ripple"
                 float3 n = normalize(float3(-slope * _Slope, 1.0));
                 float3 l = normalize(_LightDir.xyz);
 
-                // Éclairage relatif à une surface plate : une eau immobile reste noire.
-                float diffuse = max(0.0, dot(n, l) - l.z);
+                // Éclairage relatif à une surface plate : une eau immobile ne renvoie rien.
+                float lit = dot(n, l) - l.z;
+                float diffuse = max(0.0, lit);
+                float shadow = max(0.0, -lit);
                 float specular = pow(saturate(dot(reflect(-l, n), float3(0, 0, 1))), 48.0);
+
+                if (oneBit)
+                {
+                    // Quantité d'encre, puis seuil tramé : chaque gros pixel est soit encre, soit papier.
+                    float ink = saturate(((diffuse + shadow * _ShadowInk) * 1.5 + specular) * _Intensity);
+                    int2 c = int2(fmod(cell, 4.0));
+                    float threshold = Bayer4[c.y * 4 + c.x];
+                    return ink > threshold + 0.03 ? _InkColor : _PaperColor;
+                }
 
                 float3 color = _BaseColor.rgb + _LightColor.rgb * (diffuse * 1.5 + specular) * _Intensity;
                 return float4(color, 1.0);

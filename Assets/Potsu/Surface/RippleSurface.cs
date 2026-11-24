@@ -17,6 +17,22 @@ namespace Potsu.Surface
         [Tooltip("Amplitude d'une onde pour un clic bref et pour une charge complète.")]
         [SerializeField] Vector2 amplitudeRange = new Vector2(0.6f, 1.6f);
 
+        public enum Style
+        {
+            Liquid,
+            OneBit,
+        }
+
+        [Header("Rendu")]
+        [Tooltip("Liquide : reflets sur fond noir. 1-bit : encre noire sur blanc, pixels agrandis, tramage.")]
+        [SerializeField] Style style = Style.OneBit;
+
+        [Tooltip("Taille d'un pixel en style 1-bit, en pixels écran (4 sur un écran Retina ≈ pixels doublés).")]
+        [SerializeField, Range(1, 16)] int pixelSize = 4;
+
+        static readonly int OneBitId = Shader.PropertyToID("_OneBit");
+        static readonly int PixelSizeId = Shader.PropertyToID("_PixelSize");
+        static readonly int ResolutionId = Shader.PropertyToID("_Resolution");
         static readonly int RipplesId = Shader.PropertyToID("_Ripples");
         static readonly int RippleCountId = Shader.PropertyToID("_RippleCount");
         static readonly int NowId = Shader.PropertyToID("_Now");
@@ -49,6 +65,9 @@ namespace Potsu.Surface
             FitQuadToView();
             material.SetFloat(NowId, Time.time);
             material.SetFloat(AspectId, Aspect);
+            material.SetFloat(OneBitId, style == Style.OneBit ? 1f : 0f);
+            material.SetFloat(PixelSizeId, pixelSize);
+            material.SetVector(ResolutionId, new Vector4(Screen.width, Screen.height, 0f, 0f));
         }
 
         void OnDestroy()
