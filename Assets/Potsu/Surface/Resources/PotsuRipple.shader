@@ -32,7 +32,7 @@ Shader "Potsu/Ripple"
             #pragma fragment frag
             #include "UnityCG.cginc"
 
-            #define MAX_RIPPLES 32
+            #define MAX_RIPPLES 64
             #define TWO_PI 6.2831853
 
             // x, y : centre (centre de l'écran = 0, hauteur de l'écran = 1) ; z : instant de départ ; w : amplitude

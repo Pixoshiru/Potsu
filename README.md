@@ -11,6 +11,7 @@ Potsu est **paramétrique** : presque rien n'y est enregistré à l'avance. Pas 
 - Le son est une sinusoïde simple : attaque courte, volume moyen, decay d'une seconde.
 - Le son et l'onde partent **au relâchement**. Plusieurs clics rapides forment un accord.
 - On peut **charger** un clic en le maintenant : plus l'appui dure (jusqu'à 1,5 s), plus l'accord joué contient de notes, et plus l'onde est forte.
+- Chaque frappe **se répète** toutes les secondes, six fois, en s'usant : moins forte, plus sourde, onde plus faible. Puis elle se tait.
 
 ## Ouvrir le projet
 
@@ -29,6 +30,6 @@ Le projet est découpé en quatre modules, décrits dans [Docs/](Docs/) :
 | [Surface](Docs/Modules/Surface.md) | La surface de jeu : son aspect visuel et ses interactions | `Assets/Potsu/Surface` |
 | [Synthétiseur](Docs/Modules/Synthetiseur.md) | La génération du son et du timbre | `Assets/Potsu/Synthesizer` |
 | [Compositeur](Docs/Modules/Compositeur.md) | Les gammes et les notes jouées | `Assets/Potsu/Composer` |
-| [Pendule](Docs/Modules/Pendule.md) | La temporalité d'une session (à concevoir) | `Assets/Potsu/Pendulum` |
+| [Pendule](Docs/Modules/Pendule.md) | La temporalité d'une session : répétitions, et à terme l'horloge de la machine | `Assets/Potsu/Pendulum` |
 
 `Assets/Potsu/Core` contient le point d'entrée qui relie les modules. Voir [Docs/Architecture.md](Docs/Architecture.md).

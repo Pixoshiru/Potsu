@@ -28,7 +28,7 @@ Chaque onde est un paquet d'ondes circulaire : une sinusoïde enveloppée d'une 
 
 Le shader calcule une hauteur en chaque point, en déduit une normale, et éclaire cette normale. Une eau immobile reste noire : seules les pentes renvoient de la lumière. C'est ce qui donne l'aspect liquide, sans texture.
 
-Au plus 32 ondes vivent en même temps. Les plus anciennes sont remplacées.
+Au plus 64 ondes vivent en même temps (frappes et échos confondus). Les plus anciennes sont remplacées. Un écho relance une onde au même endroit, plus faible selon son usure.
 
 ### Paramètres (sur le matériau)
 

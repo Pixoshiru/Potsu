@@ -9,7 +9,7 @@ namespace Potsu.Surface
     /// </summary>
     public sealed class RippleSurface : MonoBehaviour
     {
-        public const int MaxRipples = 32; // doit correspondre à MAX_RIPPLES dans PotsuRipple.shader
+        public const int MaxRipples = 64; // doit correspondre à MAX_RIPPLES dans PotsuRipple.shader
 
         [Tooltip("Durée de maintien pour une charge complète, en secondes.")]
         [SerializeField, Min(0.05f)] float fullChargeSeconds = 1.5f;
@@ -58,15 +58,18 @@ namespace Potsu.Surface
 
         static float Aspect => Screen.height > 0 ? (float)Screen.width / Screen.height : 1f;
 
-        /// <summary>Lance une onde à une position écran (pixels), avec une charge 0-1.</summary>
-        public void SpawnRipple(Vector2 screenPosition, float charge01)
+        /// <summary>
+        /// Lance une onde à une position écran (pixels), avec une charge 0-1.
+        /// <paramref name="strength"/> multiplie l'amplitude (1 = onde neuve, moins pour un écho).
+        /// </summary>
+        public void SpawnRipple(Vector2 screenPosition, float charge01, float strength = 1f)
         {
             // Coordonnées de surface : centre de l'écran = (0, 0), hauteur de l'écran = 1.
             var p = new Vector2(
                 (screenPosition.x / Mathf.Max(1, Screen.width) - 0.5f) * Aspect,
                 screenPosition.y / Mathf.Max(1, Screen.height) - 0.5f);
 
-            float amplitude = Mathf.Lerp(amplitudeRange.x, amplitudeRange.y, Mathf.Clamp01(charge01));
+            float amplitude = Mathf.Lerp(amplitudeRange.x, amplitudeRange.y, Mathf.Clamp01(charge01)) * strength;
             ripples[nextRipple] = new Vector4(p.x, p.y, Time.time, amplitude);
             nextRipple = (nextRipple + 1) % MaxRipples;
             rippleCount = Mathf.Min(rippleCount + 1, MaxRipples);
