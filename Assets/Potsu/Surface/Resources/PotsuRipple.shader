@@ -23,7 +23,7 @@ Shader "Potsu/Ripple"
         _LightDir ("Direction de la lumière", Vector) = (-0.5, 0.7, 0.6, 0)
 
         [Toggle] _OneBit ("Style 1-bit", Float) = 1
-        _PixelSize ("Taille d'un pixel 1-bit (pixels écran)", Float) = 4
+        _PixelSize ("Taille d'un pixel 1-bit (pixels écran)", Float) = 2
         _InkColor ("Encre (1-bit)", Color) = (0, 0, 0, 1)
         _PaperColor ("Papier (1-bit)", Color) = (1, 1, 1, 1)
         _ShadowInk ("Encre dans les creux (1-bit)", Range(0, 1)) = 0.6

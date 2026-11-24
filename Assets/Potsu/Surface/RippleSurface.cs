@@ -27,8 +27,8 @@ namespace Potsu.Surface
         [Tooltip("Liquide : reflets sur fond noir. 1-bit : encre noire sur blanc, pixels agrandis, tramage.")]
         [SerializeField] Style style = Style.OneBit;
 
-        [Tooltip("Taille d'un pixel en style 1-bit, en pixels écran (4 sur un écran Retina ≈ pixels doublés).")]
-        [SerializeField, Range(1, 16)] int pixelSize = 4;
+        [Tooltip("Taille d'un pixel en style 1-bit, en pixels écran (2 par défaut).")]
+        [SerializeField, Range(1, 16)] int pixelSize = 2;
 
         static readonly int OneBitId = Shader.PropertyToID("_OneBit");
         static readonly int PixelSizeId = Shader.PropertyToID("_PixelSize");
