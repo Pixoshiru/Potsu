@@ -1,0 +1,34 @@
+# Potsu
+
+Potsu est un jouet musical numérique pour PC, Mac et iOS, fait avec Unity. On joue à la souris ou du bout des doigts.
+
+Potsu est **paramétrique** : presque rien n'y est enregistré à l'avance. Pas de samples, pas de textures : l'image et le son sortent de formules mathématiques et de synthèse sonore.
+
+## La version actuelle (V1)
+
+- Un écran noir. Un clic (ou un toucher) fait naître une onde qui se propage comme sur une surface liquide, et joue une note.
+- La note est tirée au hasard sur deux octaves, dans la gamme du moment. La gamme change toutes les 30 secondes.
+- Le son est une sinusoïde simple : attaque courte, volume moyen, decay d'une seconde.
+- Le son et l'onde partent **au relâchement**. Plusieurs clics rapides forment un accord.
+- On peut **charger** un clic en le maintenant : plus l'appui dure (jusqu'à 1,5 s), plus l'accord joué contient de notes, et plus l'onde est forte.
+
+## Ouvrir le projet
+
+1. Installer **Unity 6.6** (6000.6.x) avec Unity Hub, ainsi que les modules de build voulus (Mac, Windows, iOS).
+2. Dans Unity Hub : **Add → Add project from disk**, puis choisir ce dossier. Unity génère les réglages manquants au premier lancement.
+3. Ouvrir n'importe quelle scène (même vide) et appuyer sur **Play**. Potsu se met en place tout seul : caméra, surface, son.
+
+La gamme en cours s'affiche dans la console Unity à chaque changement.
+
+## Organisation
+
+Le projet est découpé en quatre modules, décrits dans [Docs/](Docs/) :
+
+| Module | Rôle | Dossier |
+|---|---|---|
+| [Surface](Docs/Modules/Surface.md) | La surface de jeu : son aspect visuel et ses interactions | `Assets/Potsu/Surface` |
+| [Synthétiseur](Docs/Modules/Synthetiseur.md) | La génération du son et du timbre | `Assets/Potsu/Synthesizer` |
+| [Compositeur](Docs/Modules/Compositeur.md) | Les gammes et les notes jouées | `Assets/Potsu/Composer` |
+| [Pendule](Docs/Modules/Pendule.md) | La temporalité d'une session (à concevoir) | `Assets/Potsu/Pendulum` |
+
+`Assets/Potsu/Core` contient le point d'entrée qui relie les modules. Voir [Docs/Architecture.md](Docs/Architecture.md).
