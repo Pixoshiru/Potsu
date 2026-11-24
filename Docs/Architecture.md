@@ -44,4 +44,5 @@ Chaque module a une seule responsabilité et ne connaît pas les autres. Un seul
 
 - **Mac / PC** : souris, un appui à la fois.
 - **iOS** : multitouch, chaque doigt est une frappe indépendante, donc plusieurs doigts relâchés ensemble forment un accord.
-- Les entrées passent par le nouvel Input System s'il est actif, sinon par l'ancien Input Manager.
+- Les entrées passent par le **nouvel Input System**, qui est le réglage du projet. `PointerTracker` garde une branche pour l'ancien Input Manager, utilisée seulement si *Active Input Handling* repasse sur l'ancien système.
+- Le rendu passe par **URP**. Le shader des ondes est un shader unlit simple, compatible avec URP comme avec l'ancien pipeline.

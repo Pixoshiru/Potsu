@@ -16,10 +16,21 @@ Potsu est **paramétrique** : presque rien n'y est enregistré à l'avance. Pas 
 ## Ouvrir le projet
 
 1. Installer **Unity 6.6** (6000.6.x) avec Unity Hub, ainsi que les modules de build voulus (Mac, Windows, iOS).
-2. Dans Unity Hub : **Add → Add project from disk**, puis choisir ce dossier. Unity génère les réglages manquants au premier lancement.
+2. Cloner ce dépôt (GitHub Desktop ou `git clone`), puis dans Unity Hub : **Add → Add project from disk** et choisir **le dossier du clone**. C'est ce dossier que Unity doit ouvrir, sinon les mises à jour récupérées par Git n'arrivent pas dans Unity.
 3. Ouvrir n'importe quelle scène (même vide) et appuyer sur **Play**. Potsu se met en place tout seul : caméra, surface, son.
 
 La gamme en cours s'affiche dans la console Unity à chaque changement.
+
+## Configuration technique
+
+| Élément | Choix |
+|---|---|
+| Unity | 6.6 (`ProjectSettings/ProjectVersion.txt`) |
+| Rendu | **URP** (Universal Render Pipeline 17.6). Assets du pipeline à la racine de `Assets/` : `New Universal Render Pipeline Asset` (+ son `_Renderer`), `UniversalRenderPipelineGlobalSettings`, `DefaultVolumeProfile`. |
+| Entrées | **Input System 1.20.1**, avec *Active Input Handling* réglé sur *Input System Package (New)*. |
+| Contenu | Aucun sample, aucune texture, aucune scène obligatoire : tout est créé par code au lancement. |
+
+À commiter : `Assets/` (avec les fichiers `.meta`), `Packages/`, `ProjectSettings/`. À ne pas commiter : `Library/`, `Temp/`, `Logs/`, `UserSettings/` (déjà exclus par `.gitignore`).
 
 ## Organisation
 
