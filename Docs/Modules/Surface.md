@@ -33,6 +33,7 @@ Le shader calcule une hauteur en chaque point, en déduit une normale, et éclai
 Le composant `RippleSurface` (objet `Potsu`) a un réglage **Style** :
 
 - **OneBit** (par défaut) : encre noire sur papier blanc, comme les premiers Macintosh. L'image est calculée sur des « gros pixels » de `pixelSize` pixels écran (2 par défaut). Chaque gros pixel est soit noir, soit blanc : la quantité d'encre (pentes éclairées, creux, reflets) est convertie par un **tramage ordonné** (matrice de Bayer 4×4). Une surface immobile reste blanche.
+- **OneBitInverted** : la même chose en négatif, blanc sur noir. Une surface immobile reste noire.
 - **Liquid** : le rendu d'origine, reflets clairs sur fond noir.
 
 Le style se change en direct pendant Play. Sur le matériau, `_InkColor` et `_PaperColor` permettent d'autres paires de couleurs, et `_ShadowInk` règle la part d'encre dans les creux des vagues (0 = seulement les pentes éclairées).
@@ -52,7 +53,7 @@ Au plus 64 ondes vivent en même temps (frappes et échos confondus). Les plus a
 | `_Lifetime` | Durée de vie d'une onde. |
 | `_Slope` | Relief perçu (force des reflets sur les pentes). |
 | `_Intensity`, `_LightColor`, `_LightDir`, `_BaseColor` | Éclairage et couleurs (style liquide). |
-| `_InkColor`, `_PaperColor`, `_ShadowInk` | Couleurs et densité d'encre (style 1-bit). |
+| `_InkColor`, `_PaperColor`, `_ShadowInk` | Couleurs et densité d'encre (styles 1-bit ; en inversé, les deux couleurs sont échangées). |
 
 En Play, sélectionner l'objet `Potsu Surface` pour régler ces valeurs en direct. Le style et la taille des pixels se règlent sur le composant `RippleSurface` de l'objet `Potsu`.
 

@@ -21,16 +21,18 @@ namespace Potsu.Surface
         {
             Liquid,
             OneBit,
+            OneBitInverted,
         }
 
         [Header("Rendu")]
-        [Tooltip("Liquide : reflets sur fond noir. 1-bit : encre noire sur blanc, pixels agrandis, tramage.")]
+        [Tooltip("Liquide : reflets sur fond noir. 1-bit : noir sur blanc, pixels agrandis, tramage. 1-bit inversé : blanc sur noir.")]
         [SerializeField] Style style = Style.OneBit;
 
         [Tooltip("Taille d'un pixel en style 1-bit, en pixels écran (2 par défaut).")]
         [SerializeField, Range(1, 16)] int pixelSize = 2;
 
         static readonly int OneBitId = Shader.PropertyToID("_OneBit");
+        static readonly int InvertId = Shader.PropertyToID("_Invert");
         static readonly int PixelSizeId = Shader.PropertyToID("_PixelSize");
         static readonly int ResolutionId = Shader.PropertyToID("_Resolution");
         static readonly int RipplesId = Shader.PropertyToID("_Ripples");
@@ -65,7 +67,8 @@ namespace Potsu.Surface
             FitQuadToView();
             material.SetFloat(NowId, Time.time);
             material.SetFloat(AspectId, Aspect);
-            material.SetFloat(OneBitId, style == Style.OneBit ? 1f : 0f);
+            material.SetFloat(OneBitId, style == Style.Liquid ? 0f : 1f);
+            material.SetFloat(InvertId, style == Style.OneBitInverted ? 1f : 0f);
             material.SetFloat(PixelSizeId, pixelSize);
             material.SetVector(ResolutionId, new Vector4(Screen.width, Screen.height, 0f, 0f));
         }

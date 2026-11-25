@@ -7,6 +7,7 @@
 // - Liquide : reflets colorés sur fond sombre.
 // - 1-bit : encre noire sur papier blanc, pixels agrandis et tramage ordonné (Bayer 4x4),
 //   à la manière des premiers Macintosh.
+// - 1-bit inversé : même logique, encre et papier échangés (blanc sur noir).
 Shader "Potsu/Ripple"
 {
     Properties
@@ -27,6 +28,7 @@ Shader "Potsu/Ripple"
         _InkColor ("Encre (1-bit)", Color) = (0, 0, 0, 1)
         _PaperColor ("Papier (1-bit)", Color) = (1, 1, 1, 1)
         _ShadowInk ("Encre dans les creux (1-bit)", Range(0, 1)) = 0.6
+        [Toggle] _Invert ("1-bit inversé (blanc sur noir)", Float) = 0
     }
 
     SubShader
@@ -55,7 +57,7 @@ Shader "Potsu/Ripple"
             float _Speed, _Wavelength, _PacketWidth, _Damping, _Lifetime, _Slope, _Intensity;
             float4 _BaseColor, _LightColor, _LightDir;
 
-            float _OneBit, _PixelSize, _ShadowInk;
+            float _OneBit, _Invert, _PixelSize, _ShadowInk;
             float4 _InkColor, _PaperColor;
             float4 _Resolution; // xy : taille de l'écran en pixels
 
@@ -145,7 +147,9 @@ Shader "Potsu/Ripple"
                     float ink = saturate(((diffuse + shadow * _ShadowInk) * 1.5 + specular) * _Intensity);
                     int2 c = int2(fmod(cell, 4.0));
                     float threshold = Bayer4[c.y * 4 + c.x];
-                    return ink > threshold + 0.03 ? _InkColor : _PaperColor;
+                    float4 inkColor = _Invert > 0.5 ? _PaperColor : _InkColor;
+                    float4 paperColor = _Invert > 0.5 ? _InkColor : _PaperColor;
+                    return ink > threshold + 0.03 ? inkColor : paperColor;
                 }
 
                 float3 color = _BaseColor.rgb + _LightColor.rgb * (diffuse * 1.5 + specular) * _Intensity;
